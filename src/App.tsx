@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ConfigProvider, theme } from 'antd';
+import { ConfigProvider, theme, App as AntApp } from 'antd';
 import { useConfigStore } from './stores/configStore';
 import ConfigPage from './pages/ConfigPage';
 import HomePage from './pages/HomePage';
@@ -19,19 +19,21 @@ function App() {
                 },
             }}
         >
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Layout />}>
-                        <Route
-                            index
-                            element={isConfigured ? <HomePage /> : <Navigate to="/config" />}
-                        />
-                        <Route path="config" element={<ConfigPage />} />
-                        <Route path="exam" element={<ExamPage />} />
-                        <Route path="results" element={<ResultsPage />} />
-                    </Route>
-                </Routes>
-            </Router>
+            <AntApp>  {/* 添加这个包装器 */}
+                <Router>
+                    <Routes>
+                        <Route path="/" element={<Layout />}>
+                            <Route
+                                index
+                                element={isConfigured ? <HomePage /> : <Navigate to="/config" />}
+                            />
+                            <Route path="config" element={<ConfigPage />} />
+                            <Route path="exam" element={<ExamPage />} />
+                            <Route path="results" element={<ResultsPage />} />
+                        </Route>
+                    </Routes>
+                </Router>
+            </AntApp>
         </ConfigProvider>
     );
 }
