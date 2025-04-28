@@ -51,7 +51,7 @@ export interface Question {
     QuestionId: string | null;
     Type: QuestionTypes;
     Stem: string;
-    Options: [string, string][] | null;
+    Options: Array<{Item1: string, Item2: string}> | null; //Options: [string, string][] | null;
     Score: number;
     UserAnswer?: string[] | null;
     Answer: string[];

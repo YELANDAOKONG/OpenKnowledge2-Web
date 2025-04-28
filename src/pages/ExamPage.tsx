@@ -306,38 +306,21 @@ const ExamPage = () => {
 
     // Helper function to render input based on question type
     function renderQuestionInput(question: Question) {
-        // 添加调试日志
-        console.log('Question options:', question.Options);
-        console.log('Options type:', question.Options ? typeof question.Options : 'null');
-        console.log('Is array:', Array.isArray(question.Options));
-
-        // 确保选项是正确的格式
-        const safeOptions = Array.isArray(question.Options) ? question.Options : [];
+        // 使用 Item1/Item2 格式的选项
+        const options = Array.isArray(question.Options) ? question.Options : [];
 
         switch (question.Type) {
             case QuestionTypes.SingleChoice:
                 return (
                     <Form.Item name="answer" rules={[{ required: true, message: 'Please select an answer' }]}>
                         <Radio.Group>
-                            {safeOptions.map((option) => {
-                                // 处理多种可能的选项格式
-                                let key, value;
-                                if (Array.isArray(option)) {
-                                    [key, value] = option;
-                                } else if (typeof option === 'object' && option !== null) {
-                                    // 假设可能是 {key: value} 格式
-                                    const entries = Object.entries(option);
-                                    if (entries.length > 0) {
-                                        [key, value] = entries[0];
-                                    } else {
-                                        return null; // 跳过无效选项
-                                    }
-                                } else {
-                                    return null; // 跳过无效选项
-                                }
+                            {options.map((option, index) => {
+                                // 使用 Item1 和 Item2 属性
+                                const key = option.Item1;
+                                const value = option.Item2;
 
                                 return (
-                                    <div key={key} style={{ margin: '8px 0' }}>
+                                    <div key={`${key}-${index}`} style={{ margin: '8px 0' }}>
                                         <Radio value={key}>
                                             <Space>
                                                 <Text strong>{key}.</Text>
@@ -355,25 +338,13 @@ const ExamPage = () => {
                 return (
                     <Form.Item name="answer" rules={[{ required: true, message: 'Please select at least one answer' }]}>
                         <Checkbox.Group style={{ width: '100%' }}>
-                            {safeOptions.map((option) => {
-                                // 处理多种可能的选项格式
-                                let key, value;
-                                if (Array.isArray(option)) {
-                                    [key, value] = option;
-                                } else if (typeof option === 'object' && option !== null) {
-                                    // 假设可能是 {key: value} 格式
-                                    const entries = Object.entries(option);
-                                    if (entries.length > 0) {
-                                        [key, value] = entries[0];
-                                    } else {
-                                        return null; // 跳过无效选项
-                                    }
-                                } else {
-                                    return null; // 跳过无效选项
-                                }
+                            {options.map((option, index) => {
+                                // 使用 Item1 和 Item2 属性
+                                const key = option.Item1;
+                                const value = option.Item2;
 
                                 return (
-                                    <div key={key} style={{ margin: '8px 0' }}>
+                                    <div key={`${key}-${index}`} style={{ margin: '8px 0' }}>
                                         <Checkbox value={key}>
                                             <Space>
                                                 <Text strong>{key}.</Text>
