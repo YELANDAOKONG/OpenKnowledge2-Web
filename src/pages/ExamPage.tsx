@@ -1,3 +1,4 @@
+import { App as AntApp } from 'antd';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Button, Typography, message, Modal, Space, Spin, Progress, Radio, Checkbox, Input, Form } from 'antd';
@@ -18,6 +19,7 @@ const ExamPage = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [submitting, setSubmitting] = useState(false);
     const [form] = Form.useForm();
+    const { modal } = AntApp.useApp();
 
     // Redirect if no exam or not in progress
     useEffect(() => {
@@ -84,31 +86,42 @@ const ExamPage = () => {
     };
 
     const handleSubmit = () => {
-        Modal.confirm({
+        // 使用 modal API 而不是静态方法
+        modal.confirm({
             title: 'Submit Examination',
             content: 'Are you sure you want to submit this examination? This action cannot be undone.',
             onOk: async () => {
-                setSubmitting(true);
                 try {
-                    // First end the exam (calculating scores for auto-graded questions)
-                    endExam();
+                    console.log("Modal confirmed, ending exam..."); // 调试日志
+                    setSubmitting(true);
 
-                    // If there are AI-graded questions, show a modal that they'll be graded
-                    const hasAiGradedQuestions = currentExam.ExaminationSections.some(
+                    // 手动结束考试
+                    endExam();
+                    console.log("Exam ended, preparing to navigate..."); // 调试日志
+
+                    // 检查 AI 评分的问题
+                    const hasAiGradedQuestions = currentExam?.ExaminationSections.some(
                         section => section.Questions?.some(q => q.IsAiJudge) || false
                     );
 
                     if (hasAiGradedQuestions) {
-                        Modal.info({
+                        console.log("Has AI graded questions, showing info modal..."); // 调试日志
+                        // 使用 modal.info 替代 Modal.info
+                        modal.info({
                             title: 'AI Grading Required',
                             content: 'Some questions require AI grading. Please navigate to the Results page to initiate AI grading.',
+                            onOk: () => {
+                                console.log("Info modal OK clicked, navigating..."); // 调试日志
+                                navigate('/results');
+                            }
                         });
+                    } else {
+                        // 直接导航到结果页面
+                        console.log("No AI graded questions, navigating directly..."); // 调试日志
+                        navigate('/results');
                     }
-
-                    // Navigate to results page
-                    navigate('/results');
                 } catch (error) {
-                    console.error('Error submitting exam:', error);
+                    console.error("Error submitting exam:", error); // 详细错误日志
                     message.error('There was a problem submitting your exam');
                 } finally {
                     setSubmitting(false);

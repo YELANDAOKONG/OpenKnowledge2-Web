@@ -54,8 +54,21 @@ const ResultsPage = () => {
     const aiGradedQuestions = calculateAiGradedQuestions();
 
     const startAiGrading = async () => {
+        // 先检查配置是否完整
+        if (!config.OpenAiApiUrl || !config.OpenAiApiKey ||
+            config.OpenAiApiUrl.trim() === '' ||
+            config.OpenAiApiKey.trim() === '') {
+            message.error('OpenAI API not configured. Please go to Settings page to configure it.');
+            return;
+        }
         if (!openAIService.isInitialized()) {
             try {
+                console.log("Attempting to initialize OpenAI service with:", {
+                    url: config.OpenAiApiUrl,
+                    hasKey: !!config.OpenAiApiKey,
+                    model: config.OpenAiModel
+                });
+
                 openAIService.initialize(config);
             } catch (error) {
                 console.error('Failed to initialize OpenAI service:', error);

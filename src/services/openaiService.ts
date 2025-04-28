@@ -5,9 +5,20 @@ class OpenAIService {
     private client: OpenAI | null = null;
 
     initialize(config: SystemConfig) {
-        if (!config.OpenAiApiUrl || !config.OpenAiApiKey) {
+        // 确保深入检查配置值，不仅仅看它们是否存在
+        if (!config ||
+            !config.OpenAiApiUrl ||
+            !config.OpenAiApiKey ||
+            config.OpenAiApiUrl.trim() === '' ||
+            config.OpenAiApiKey.trim() === '') {
             throw new Error('OpenAI API URL and API Key must be configured');
         }
+
+        console.log("Initializing OpenAI service with:", {
+            url: config.OpenAiApiUrl,
+            hasKey: !!config.OpenAiApiKey,
+            model: config.OpenAiModel
+        });
 
         this.client = new OpenAI({
             apiKey: config.OpenAiApiKey,

@@ -19,7 +19,7 @@ function App() {
                 },
             }}
         >
-            <AntApp>  {/* 添加这个包装器 */}
+            <AntApp>
                 <Router>
                     <Routes>
                         <Route path="/" element={<Layout />}>
