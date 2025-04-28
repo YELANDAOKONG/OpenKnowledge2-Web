@@ -6,6 +6,7 @@ import { UploadFile } from 'antd/es/upload/interface';
 import { useExamStore } from '../stores/examStore';
 import { Examination } from '../models/types';
 import { RcFile } from 'antd/es/upload';
+import { App as AntApp } from 'antd';
 
 const { Title, Paragraph } = Typography;
 
@@ -86,13 +87,21 @@ const HomePage = () => {
     };
 
     // Sample exam for demonstration
+    const { modal } = AntApp.useApp(); // 获取上下文化的modal
+
+    // 重写样例考试加载函数
     const loadSampleExam = () => {
-        Modal.confirm({
+        // 使用上下文化的modal
+        modal.confirm({
             title: 'Load Sample Exam',
             content: 'This will load a sample math examination for demonstration purposes. Continue?',
             onOk: () => {
+                // 首先重置当前考试
+                resetExam();
+
+                // 确保正确的数据结构
                 const sampleExam: Examination = {
-                    ExaminationVersion: { Major: 2, Minor: 0, Patch: 0 },
+                    ExaminationVersion: { Major: 1, Minor: 0, Patch: 0 },
                     ExaminationMetadata: {
                         ExamId: 'sample-001',
                         Title: 'Sample Mathematics Examination',
@@ -114,7 +123,12 @@ const HomePage = () => {
                                     QuestionId: 'q1',
                                     Type: 1, // SingleChoice
                                     Stem: 'What is 2 + 2?',
-                                    Options: [['A', '3'], ['B', '4'], ['C', '5'], ['D', '6']],
+                                    Options: [
+                                        {Item1: 'A', Item2: '3'},
+                                        {Item1: 'B', Item2: '4'},
+                                        {Item1: 'C', Item2: '5'},
+                                        {Item1: 'D', Item2: '6'}
+                                    ],
                                     Score: 10,
                                     Answer: ['B'],
                                     IsAiJudge: false
@@ -132,9 +146,12 @@ const HomePage = () => {
                                     QuestionId: 'q3',
                                     Type: 3, // Judgment
                                     Stem: 'Is 17 a prime number?',
-                                    Options: [['A', 'True'], ['B', 'False']],
+                                    Options: [
+                                        {Item1: 'T', Item2: 'True'},
+                                        {Item1: 'F', Item2: 'False'}
+                                    ],
                                     Score: 10,
-                                    Answer: ['A'],
+                                    Answer: ['T'],
                                     IsAiJudge: false
                                 },
                                 {
@@ -161,7 +178,12 @@ const HomePage = () => {
                                     QuestionId: 'q5',
                                     Type: 1, // SingleChoice
                                     Stem: 'Solve for x: 2x + 5 = 13',
-                                    Options: [['A', 'x = 3'], ['B', 'x = 4'], ['C', 'x = 5'], ['D', 'x = 6']],
+                                    Options: [
+                                        {Item1: 'A', Item2: 'x = 3'},
+                                        {Item1: 'B', Item2: 'x = 4'},
+                                        {Item1: 'C', Item2: 'x = 5'},
+                                        {Item1: 'D', Item2: 'x = 6'}
+                                    ],
                                     Score: 15,
                                     Answer: ['B'],
                                     IsAiJudge: false
@@ -180,7 +202,12 @@ const HomePage = () => {
                                     QuestionId: 'q7',
                                     Type: 2, // MultipleChoice
                                     Stem: 'Which of the following are quadratic equations? Select all that apply.',
-                                    Options: [['A', 'y = 2x + 3'], ['B', 'y = x² - 4'], ['C', 'y = 3x² + 2x - 1'], ['D', 'y = x³ - 2x']],
+                                    Options: [
+                                        {Item1: 'A', Item2: 'y = 2x + 3'},
+                                        {Item1: 'B', Item2: 'y = x² - 4'},
+                                        {Item1: 'C', Item2: 'y = 3x² + 2x - 1'},
+                                        {Item1: 'D', Item2: 'y = x³ - 2x'}
+                                    ],
                                     Score: 15,
                                     Answer: ['B', 'C'],
                                     IsAiJudge: false
@@ -201,8 +228,12 @@ const HomePage = () => {
                     ]
                 };
 
-                loadExam(sampleExam);
-                message.success('Sample exam loaded successfully');
+                // 使用短暂延迟避免潜在的状态问题
+                setTimeout(() => {
+                    loadExam(sampleExam);
+                    setShowUploadForm(false);
+                    message.success('Sample exam loaded successfully');
+                }, 100);
             }
         });
     };
