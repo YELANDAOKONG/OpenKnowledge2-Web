@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Typography, Button, Upload, message, Space, Modal } from 'antd';
-import { UploadOutlined, FileOutlined } from '@ant-design/icons';
+import { UploadOutlined, FileOutlined, ReloadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/es/upload/interface';
 import { useExamStore } from '../stores/examStore';
 import { Examination } from '../models/types';
@@ -11,17 +11,16 @@ const { Title, Paragraph } = Typography;
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const { loadExam, startExam, currentExam, examInProgress } = useExamStore();
+    const { loadExam, startExam, currentExam, examInProgress, resetExam } = useExamStore();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
-
+    const [showUploadForm, setShowUploadForm] = useState(false);
     const handleUpload = async () => {
         const file = fileList[0] as RcFile;
         if (!file) {
             message.error('Please select an exam file to upload');
             return;
         }
-
         setUploading(true);
         try {
             const text = await file.text();
@@ -32,12 +31,16 @@ const HomePage = () => {
                 throw new Error('Invalid examination format');
             }
 
+            // 重置当前考试状态，以确保可以加载新的
+            resetExam();
+
             // Load the exam
             loadExam(examData);
             message.success('Exam loaded successfully');
 
             // Clear the file list
             setFileList([]);
+            setShowUploadForm(false);
 
         } catch (error) {
             console.error('Failed to load exam:', error);
@@ -65,6 +68,23 @@ const HomePage = () => {
         navigate('/results');
     };
 
+    // 添加一个加载新试卷的功能
+    const handleLoadNewExam = () => {
+        if (examInProgress) {
+            Modal.confirm({
+                title: 'Are you sure?',
+                content: 'You have an exam in progress. Loading a new exam will lose your current progress.',
+                onOk: () => {
+                    resetExam();
+                    setShowUploadForm(true);
+                }
+            });
+        } else {
+            resetExam();
+            setShowUploadForm(true);
+        }
+    };
+
     // Sample exam for demonstration
     const loadSampleExam = () => {
         Modal.confirm({
@@ -72,7 +92,7 @@ const HomePage = () => {
             content: 'This will load a sample math examination for demonstration purposes. Continue?',
             onOk: () => {
                 const sampleExam: Examination = {
-                    ExaminationVersion: { Major: 1, Minor: 0, Patch: 0 },
+                    ExaminationVersion: { Major: 2, Minor: 0, Patch: 0 },
                     ExaminationMetadata: {
                         ExamId: 'sample-001',
                         Title: 'Sample Mathematics Examination',
@@ -195,7 +215,7 @@ const HomePage = () => {
                     Welcome to the examination system. You can upload an examination file or load a sample exam to get started.
                 </Paragraph>
 
-                {!currentExam && (
+                {(!currentExam || showUploadForm) && (
                     <Card title="Load Examination" style={{ marginBottom: 16 }}>
                         <Upload
                             fileList={fileList}
@@ -228,15 +248,28 @@ const HomePage = () => {
                                 >
                                     Load Sample Exam
                                 </Button>
+                                {showUploadForm && (
+                                    <Button onClick={() => setShowUploadForm(false)}>
+                                        Cancel
+                                    </Button>
+                                )}
                             </Space>
                         </div>
                     </Card>
                 )}
 
-                {currentExam && (
+                {currentExam && !showUploadForm && (
                     <Card
                         title={currentExam.ExaminationMetadata.Title}
                         style={{ marginBottom: 16 }}
+                        extra={
+                            <Button
+                                icon={<ReloadOutlined />}
+                                onClick={handleLoadNewExam}
+                            >
+                                Load New Exam
+                            </Button>
+                        }
                     >
                         <p><strong>Subject:</strong> {currentExam.ExaminationMetadata.Subject || 'Not specified'}</p>
                         <p><strong>Description:</strong> {currentExam.ExaminationMetadata.Description || 'No description'}</p>
@@ -268,5 +301,4 @@ const HomePage = () => {
         </div>
     );
 };
-
 export default HomePage;
