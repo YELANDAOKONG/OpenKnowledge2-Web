@@ -371,15 +371,39 @@ const ExamPage = () => {
                     </Form.Item>
                 );
 
+            // 修改判断题的选项渲染，使用试卷中的原始选项
             case QuestionTypes.Judgment:
                 return (
                     <Form.Item name="answer" rules={[{ required: true, message: 'Please select an answer' }]}>
                         <Radio.Group>
-                            <Radio value="True">True</Radio>
-                            <Radio value="False">False</Radio>
+                            {/* 使用试卷中的选项数据 */}
+                            {Array.isArray(question.Options) && question.Options.map((option, index) => {
+                                const key = option.Item1;
+                                const value = option.Item2;
+
+                                return (
+                                    <div key={`${key}-${index}`} style={{ margin: '8px 0' }}>
+                                        <Radio value={key}>
+                                            <Space>
+                                                <Text strong>{key}:</Text>
+                                                <Text>{value}</Text>
+                                            </Space>
+                                        </Radio>
+                                    </div>
+                                );
+                            })}
+
+                            {/* 如果没有选项，提供默认的 T/F 选项 */}
+                            {(!Array.isArray(question.Options) || question.Options.length === 0) && (
+                                <>
+                                    <Radio value="T">True</Radio>
+                                    <Radio value="F">False</Radio>
+                                </>
+                            )}
                         </Radio.Group>
                     </Form.Item>
                 );
+
 
             case QuestionTypes.FillInTheBlank:
                 return (
