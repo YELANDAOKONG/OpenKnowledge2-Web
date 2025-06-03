@@ -42,7 +42,7 @@ const AppHeader = () => {
     return (
         <Header style={{ position: 'sticky', top: 0, zIndex: 1, width: '100%', display: 'flex', alignItems: 'center' }}>
             <div style={{ color: 'white', marginRight: '20px', fontSize: '18px', fontWeight: 'bold' }}>
-                Exam System
+                OpenKnowledge
             </div>
             <Menu
                 theme="dark"

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Typography, Button, Upload, message, Space, Modal } from 'antd';
+import { Card, Typography, Button, Upload, message, Space } from 'antd';
 import { UploadOutlined, FileOutlined, ReloadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/es/upload/interface';
 import { useExamStore } from '../stores/examStore';
@@ -72,7 +72,8 @@ const HomePage = () => {
     // 添加一个加载新试卷的功能
     const handleLoadNewExam = () => {
         if (examInProgress) {
-            Modal.confirm({
+            // Modal
+            modal.confirm({
                 title: 'Are you sure?',
                 content: 'You have an exam in progress. Loading a new exam will lose your current progress.',
                 onOk: () => {

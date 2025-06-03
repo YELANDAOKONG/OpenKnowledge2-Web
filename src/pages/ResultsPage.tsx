@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Button, Typography, Table, Progress, Space, Divider, Spin, Tag, message } from 'antd';
-import { CheckCircleOutlined, CloseCircleOutlined, RobotOutlined, SyncOutlined } from '@ant-design/icons';
+import {
+    CheckCircleOutlined,
+    CloseCircleOutlined,
+    DownloadOutlined,
+    RobotOutlined,
+    SyncOutlined
+} from '@ant-design/icons';
 import { useExamStore } from '../stores/examStore';
 import { useConfigStore } from '../stores/configStore';
-import { Question, QuestionTypes } from '../models/types';
+import {Examination, Question, QuestionTypes, ScoreRecord} from '../models/types';
 import { openAIService } from '../services/openaiService';
 
 const { Title, Paragraph, Text } = Typography;
@@ -28,6 +34,113 @@ const ResultsPage = () => {
     if (!currentExam || !scoreRecord) {
         return <Spin size="large" />;
     }
+
+    // Function to generate downloadable exam with answers
+    const generateExamWithAnswers = (exam: Examination, scoreRecord: ScoreRecord): string => {
+        let content = `# ${exam.ExaminationMetadata.Title}\n\n`;
+        content += `Score: ${scoreRecord.ObtainedScore}/${scoreRecord.TotalScore}\n`;
+        content += `Date: ${new Date(scoreRecord.Timestamp).toLocaleString()}\n\n`;
+
+        exam.ExaminationSections.forEach((section, sectionIndex) => {
+            content += `## ${section.Title}\n\n`;
+
+            if (section.Description) {
+                content += `${section.Description}\n\n`;
+            }
+
+            section.Questions?.forEach((question, questionIndex) => {
+                const questionId = question.QuestionId || `q-${sectionIndex}-${questionIndex}`;
+                const sectionId = section.SectionId || section.Title;
+                const questionScore = scoreRecord.QuestionScores[sectionId]?.[questionId];
+
+                content += `### Question ${questionIndex + 1} (${question.Score} points)\n\n`;
+                content += `${question.Stem}\n\n`;
+
+                // Add options if applicable
+                if (question.Options && question.Options.length > 0) {
+                    content += "Options:\n";
+                    question.Options.forEach(option => {
+                        content += `- ${option.Item1}: ${option.Item2}\n`;
+                    });
+                    content += "\n";
+                }
+
+                // Add user's answer
+                content += "Your Answer:\n";
+                if (question.UserAnswer && question.UserAnswer.length > 0) {
+                    content += `${question.UserAnswer.join(", ")}\n\n`;
+                } else {
+                    content += "No answer provided\n\n";
+                }
+
+                // Add correct answer
+                content += "Correct Answer:\n";
+                content += `${question.Answer.join(", ")}\n\n`;
+
+                // Add score information
+                if (questionScore) {
+                    content += `Score: ${questionScore.ObtainedScore}/${questionScore.MaxScore}\n`;
+                    content += `Status: ${questionScore.IsCorrect ? "Correct" : "Incorrect"}\n\n`;
+                }
+
+                // Add AI feedback if available
+                if (question.IsAiJudge && questionScore) {
+                    const feedbackId = question.QuestionId || '';
+                    const feedback = aiGradingResults[feedbackId];
+                    if (feedback) {
+                        content += "AI Feedback:\n";
+                        content += `${feedback}\n\n`;
+                    }
+                }
+
+                content += "---\n\n";
+            });
+        });
+
+        return content;
+    };
+
+    // Function to trigger download
+    const downloadExamWithAnswers = () => {
+        if (!currentExam || !scoreRecord) return;
+
+        const content = generateExamWithAnswers(currentExam, scoreRecord);
+        const fileName = `${currentExam.ExaminationMetadata.Title.replace(/\s+/g, '_')}_Answers.md`;
+
+        const blob = new Blob([content], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        message.success('Exam with answers downloaded successfully');
+    };
+
+    const downloadExamJson = () => {
+        if (!currentExam) return;
+
+        const examWithAnswers = JSON.stringify(currentExam, null, 2);
+        const fileName = `${currentExam.ExaminationMetadata.Title.replace(/\s+/g, '_')}_with_answers.json`;
+
+        const blob = new Blob([examWithAnswers], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        message.success('Exam with answers downloaded successfully');
+    };
+
 
     const calculateAiGradedQuestions = () => {
         const aiQuestions: Array<{
@@ -384,6 +497,13 @@ const ResultsPage = () => {
                         </Button>
                         <Button type="primary" onClick={() => window.print()}>
                             Print Results
+                        </Button>
+                        <Button
+                            type="primary"
+                            icon={<DownloadOutlined />}
+                            onClick={downloadExamJson}
+                        >
+                            Download Exam with Answers
                         </Button>
                     </Space>
                 </div>
