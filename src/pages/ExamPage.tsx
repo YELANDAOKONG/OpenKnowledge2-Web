@@ -1,7 +1,7 @@
 import { App as AntApp } from 'antd';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Button, Typography, message, Modal, Space, Spin, Progress, Radio, Checkbox, Input, Form } from 'antd';
+import { Card, Button, Typography, message, Space, Spin, Progress, Radio, Checkbox, Input, Form } from 'antd';
 import { LeftOutlined, RightOutlined, CheckOutlined } from '@ant-design/icons';
 import { useExamStore } from '../stores/examStore';
 import { useConfigStore } from '../stores/configStore';

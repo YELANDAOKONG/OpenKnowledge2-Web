@@ -505,6 +505,13 @@ const ResultsPage = () => {
                         >
                             Download Exam with Answers
                         </Button>
+                        <Button
+                            type="primary"
+                            icon={<DownloadOutlined />}
+                            onClick={downloadExamWithAnswers}
+                        >
+                            Download Exam Markdown
+                        </Button>
                     </Space>
                 </div>
             </Card>
