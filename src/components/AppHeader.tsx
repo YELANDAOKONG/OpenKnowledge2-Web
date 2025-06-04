@@ -1,6 +1,13 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
-import { HomeOutlined, SettingOutlined, FileOutlined, TrophyOutlined, ToolOutlined  } from '@ant-design/icons';
+import {
+    HomeOutlined,
+    SettingOutlined,
+    FileOutlined,
+    TrophyOutlined,
+    ToolOutlined,
+    BookOutlined
+} from '@ant-design/icons';
 import { useExamStore } from '../stores/examStore';
 
 const { Header } = Layout;
@@ -8,7 +15,7 @@ const { Header } = Layout;
 const AppHeader = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { currentExam, examInProgress } = useExamStore();
+    const { currentExam, examInProgress, studyMode  } = useExamStore();
 
     const items = [
         {
@@ -28,13 +35,15 @@ const AppHeader = () => {
         }
     ];
 
+
     if (currentExam && examInProgress) {
         items.push({
-            key: '/exam',
-            icon: <FileOutlined />,
-            label: 'Current Exam',
+            key: studyMode ? '/study' : '/exam',
+            icon: studyMode ? <BookOutlined /> : <FileOutlined />,
+            label: studyMode ? 'Study Mode' : 'Current Exam',
         });
     }
+
 
     if (currentExam && !examInProgress) {
         items.push({

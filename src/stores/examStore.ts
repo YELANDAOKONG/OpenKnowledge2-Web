@@ -14,9 +14,11 @@ interface ExamState {
     currentExam: Examination | null;
     scoreRecord: ScoreRecord | null;
     examInProgress: boolean;
+    studyMode: boolean;
     loadExam: (exam: Examination) => void;
     updateUserAnswer: (sectionIndex: number, questionIndex: number, answer: string[]) => void;
-    startExam: () => void;
+    // startExam: () => void;
+    startExam: (isStudyMode?: boolean) => void;
     endExam: () => void;
     calculateScores: () => void;
     resetExam: () => void;
@@ -41,6 +43,7 @@ export const useExamStore = create<ExamState>()(
             currentExam: null,
             scoreRecord: null,
             examInProgress: false,
+            studyMode: false,
 
             loadExam: (exam) => {
                 // Update exam version to current if needed
@@ -75,7 +78,10 @@ export const useExamStore = create<ExamState>()(
                 set({ currentExam: updatedExam });
             },
 
-            startExam: () => set({ examInProgress: true }),
+            startExam: (isStudyMode = false) => set({
+                examInProgress: true,
+                studyMode: isStudyMode
+            }),
 
             endExam: () => {
                 const { calculateScores } = get();
@@ -147,7 +153,8 @@ export const useExamStore = create<ExamState>()(
             resetExam: () => set({
                 currentExam: null,
                 scoreRecord: null,
-                examInProgress: false
+                examInProgress: false,
+                studyMode: false // Reset study mode
             }),
         }),
         {

@@ -56,6 +56,48 @@ class OpenAIService {
         return this.parseAIResponse(aiResponse);
     }
 
+    // Add these methods to your OpenAIService class in openaiService.ts
+    async explainQuestion(question: Question, config: SystemConfig): Promise<string> {
+        if (!this.client) {
+            throw new Error('OpenAI service not initialized');
+        }
+
+        // Create a prompt for explaining the question
+        const prompt = `Please explain this question in detail:\n\n${question.Stem}\n\nProvide a clear explanation of the concepts involved and how to approach solving it.`;
+
+        const response = await this.client.chat.completions.create({
+            model: config.OpenAiModel || 'gpt-3.5-turbo',
+            temperature: config.OpenAiModelTemperature || 0.7,
+            messages: [
+                { role: 'system', content: 'You are an educational tutor explaining exam questions.' },
+                { role: 'user', content: prompt }
+            ],
+        });
+
+        return response.choices[0]?.message?.content || 'No explanation available';
+    }
+
+    async verifyQuestion(question: Question, config: SystemConfig): Promise<string> {
+        if (!this.client) {
+            throw new Error('OpenAI service not initialized');
+        }
+
+        // Create a prompt for verifying the question
+        const prompt = `Please verify if this question has any errors or ambiguities:\n\n${question.Stem}\n\nCorrect answer: ${question.Answer.join(', ')}\n\nIdentify any issues with the question, such as unclear wording, multiple possible answers, or factual errors.`;
+
+        const response = await this.client.chat.completions.create({
+            model: config.OpenAiModel || 'gpt-3.5-turbo',
+            temperature: config.OpenAiModelTemperature || 0.7,
+            messages: [
+                { role: 'system', content: 'You are an educational assessment expert verifying question quality.' },
+                { role: 'user', content: prompt }
+            ],
+        });
+
+        return response.choices[0]?.message?.content || 'No verification available';
+    }
+
+
     // Helper methods adapted from your C# code
     private getJsonGradingPrompt(question: Question): string {
         let prompt = this.getBasePrompt(question);

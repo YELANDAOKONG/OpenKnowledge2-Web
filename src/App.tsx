@@ -8,6 +8,7 @@ import ExamPage from './pages/ExamPage';
 import ResultsPage from './pages/ResultsPage';
 import UpgradePage from './pages/UpgradePage';
 import Layout from './components/Layout';
+import StudyPage from "./pages/StudyPage.tsx";
 
 // const getBasename = () => {
 //     const scriptElement = document.querySelector('script[src*="/assets/"]');
@@ -41,6 +42,7 @@ function App() {
                             />
                             <Route path="config" element={<ConfigPage />} />
                             <Route path="exam" element={<ExamPage />} />
+                            <Route path="study" element={<StudyPage />} />
                             <Route path="results" element={<ResultsPage />} />
                             <Route path="upgrade" element={<UpgradePage />} />
                         </Route>

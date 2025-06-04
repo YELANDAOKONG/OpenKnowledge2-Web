@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Typography, Button, Upload, message, Space } from 'antd';
-import { UploadOutlined, FileOutlined, ReloadOutlined } from '@ant-design/icons';
+import {UploadOutlined, FileOutlined, ReloadOutlined, BookOutlined} from '@ant-design/icons';
 import { UploadFile } from 'antd/es/upload/interface';
 import { useExamStore } from '../stores/examStore';
 import { Examination } from '../models/types';
@@ -12,7 +12,7 @@ const { Title, Paragraph } = Typography;
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const { loadExam, startExam, currentExam, examInProgress, resetExam } = useExamStore();
+    const { loadExam, startExam, currentExam, examInProgress, resetExam, studyMode } = useExamStore();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
     const [showUploadForm, setShowUploadForm] = useState(false);
@@ -51,6 +51,16 @@ const HomePage = () => {
         }
     };
 
+    const handleStartStudyMode = () => {
+        if (!currentExam) {
+            message.error('No exam is loaded');
+            return;
+        }
+        startExam(true); // Pass true to indicate study mode
+        navigate('/study'); // Navigate to the study page
+    };
+
+
     const handleStartExam = () => {
         if (!currentExam) {
             message.error('No exam is loaded');
@@ -62,7 +72,7 @@ const HomePage = () => {
     };
 
     const handleContinueExam = () => {
-        navigate('/exam');
+        navigate(studyMode ? '/study' : '/exam');
     };
 
     const handleViewResults = () => {
@@ -313,14 +323,22 @@ const HomePage = () => {
                             <Space>
                                 {examInProgress ? (
                                     <Button type="primary" onClick={handleContinueExam}>
-                                        Continue Exam
+                                        Continue {studyMode ? "Study" : "Exam"}
                                     </Button>
                                 ) : (
-                                    <Button type="primary" onClick={handleStartExam}>
-                                        Start Exam
-                                    </Button>
+                                    <>
+                                        <Button type="primary" onClick={handleStartExam}>
+                                            Start Exam
+                                        </Button>
+                                        <Button
+                                            type="primary"
+                                            icon={<BookOutlined />}
+                                            onClick={handleStartStudyMode}
+                                        >
+                                            Study Mode
+                                        </Button>
+                                    </>
                                 )}
-
                                 {!examInProgress && (
                                     <Button onClick={handleViewResults}>
                                         View Results
