@@ -318,20 +318,28 @@ const ExamPage = () => {
     );
 
     // Helper function to render input based on question type
+    // Update the renderQuestionInput function to handle both option formats
     function renderQuestionInput(question: Question) {
-        // 使用 Item1/Item2 格式的选项
+        // Helper function to get option key and value
+        const getOptionKeyValue = (option: any): {key: string, value: string} => {
+            if (option.Id !== undefined && option.Text !== undefined) {
+                // New format
+                return {key: option.Id, value: option.Text};
+            } else if (option.Item1 !== undefined && option.Item2 !== undefined) {
+                // Old format
+                return {key: option.Item1, value: option.Item2};
+            }
+            // Fallback
+            return {key: '', value: ''};
+        };
         const options = Array.isArray(question.Options) ? question.Options : [];
-
         switch (question.Type) {
             case QuestionTypes.SingleChoice:
                 return (
                     <Form.Item name="answer" rules={[{ required: true, message: 'Please select an answer' }]}>
                         <Radio.Group>
                             {options.map((option, index) => {
-                                // 使用 Item1 和 Item2 属性
-                                const key = option.Item1;
-                                const value = option.Item2;
-
+                                const {key, value} = getOptionKeyValue(option);
                                 return (
                                     <div key={`${key}-${index}`} style={{ margin: '8px 0' }}>
                                         <Radio value={key}>
@@ -346,16 +354,12 @@ const ExamPage = () => {
                         </Radio.Group>
                     </Form.Item>
                 );
-
             case QuestionTypes.MultipleChoice:
                 return (
                     <Form.Item name="answer" rules={[{ required: true, message: 'Please select at least one answer' }]}>
                         <Checkbox.Group style={{ width: '100%' }}>
                             {options.map((option, index) => {
-                                // 使用 Item1 和 Item2 属性
-                                const key = option.Item1;
-                                const value = option.Item2;
-
+                                const {key, value} = getOptionKeyValue(option);
                                 return (
                                     <div key={`${key}-${index}`} style={{ margin: '8px 0' }}>
                                         <Checkbox value={key}>
@@ -370,17 +374,13 @@ const ExamPage = () => {
                         </Checkbox.Group>
                     </Form.Item>
                 );
-
-            // 修改判断题的选项渲染，使用试卷中的原始选项
             case QuestionTypes.Judgment:
                 return (
                     <Form.Item name="answer" rules={[{ required: true, message: 'Please select an answer' }]}>
                         <Radio.Group>
-                            {/* 使用试卷中的选项数据 */}
+                            {/* Use options from question if available */}
                             {Array.isArray(question.Options) && question.Options.map((option, index) => {
-                                const key = option.Item1;
-                                const value = option.Item2;
-
+                                const {key, value} = getOptionKeyValue(option);
                                 return (
                                     <div key={`${key}-${index}`} style={{ margin: '8px 0' }}>
                                         <Radio value={key}>
@@ -392,8 +392,7 @@ const ExamPage = () => {
                                     </div>
                                 );
                             })}
-
-                            {/* 如果没有选项，提供默认的 T/F 选项 */}
+                            {/* Default T/F options if no options provided */}
                             {(!Array.isArray(question.Options) || question.Options.length === 0) && (
                                 <>
                                     <Radio value="T">True</Radio>

@@ -417,6 +417,9 @@ const ResultsPage = () => {
                 <Paragraph>
                     Exam: {currentExam.ExaminationMetadata.Title}
                 </Paragraph>
+                <Paragraph>
+                    Protocol Version: {currentExam.ExaminationVersion.Major}.{currentExam.ExaminationVersion.Minor}.{currentExam.ExaminationVersion.Patch}
+                </Paragraph>
 
                 <Card style={{ marginBottom: 24, textAlign: 'center' }}>
                     <Progress

@@ -1,6 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Examination, Question, QuestionScore, ScoreRecord, QuestionTypes } from '../models/types';
+import {
+    Examination,
+    Question,
+    QuestionScore,
+    ScoreRecord,
+    QuestionTypes,
+    CURRENT_PROTOCOL_VERSION
+} from '../models/types';
 import { v4 as uuidv4 } from 'uuid';
 
 interface ExamState {
@@ -35,15 +42,23 @@ export const useExamStore = create<ExamState>()(
             scoreRecord: null,
             examInProgress: false,
 
-            loadExam: (exam) => set({
-                currentExam: exam,
-                scoreRecord: {
-                    ...createEmptyScoreRecord(),
-                    ExamId: exam.ExaminationMetadata.ExamId || '',
-                    ExamTitle: exam.ExaminationMetadata.Title,
-                    TotalScore: exam.ExaminationMetadata.TotalScore,
-                }
-            }),
+            loadExam: (exam) => {
+                // Update exam version to current if needed
+                const examToLoad = {
+                    ...exam,
+                    ExaminationVersion: exam.ExaminationVersion || CURRENT_PROTOCOL_VERSION
+                };
+
+                set({
+                    currentExam: examToLoad,
+                    scoreRecord: {
+                        ...createEmptyScoreRecord(),
+                        ExamId: examToLoad.ExaminationMetadata.ExamId || '',
+                        ExamTitle: examToLoad.ExaminationMetadata.Title,
+                        TotalScore: examToLoad.ExaminationMetadata.TotalScore,
+                    }
+                });
+            },
 
             updateUserAnswer: (sectionIndex, questionIndex, answer) => {
                 const { currentExam } = get();

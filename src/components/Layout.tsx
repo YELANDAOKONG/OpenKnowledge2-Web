@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Layout as AntLayout, theme } from 'antd';
 import AppHeader from './AppHeader';
+import {CURRENT_PROTOCOL_VERSION} from "../models/types.ts";
 
 const { Content, Footer } = AntLayout;
 
@@ -26,7 +27,7 @@ const Layout = () => {
                 </div>
             </Content>
             <Footer style={{ textAlign: 'center' }}>
-                Open Knowledge Examination System ©{new Date().getFullYear()}
+                Open Knowledge Examination System ©{new Date().getFullYear()} | Protocol Version: {CURRENT_PROTOCOL_VERSION.Major}.{CURRENT_PROTOCOL_VERSION.Minor}.{CURRENT_PROTOCOL_VERSION.Patch}
             </Footer>
         </AntLayout>
     );

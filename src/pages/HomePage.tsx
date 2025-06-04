@@ -102,7 +102,7 @@ const HomePage = () => {
 
                 // 确保正确的数据结构
                 const sampleExam: Examination = {
-                    ExaminationVersion: { Major: 1, Minor: 0, Patch: 0 },
+                    ExaminationVersion: { Major: 2, Minor: 1, Patch: 0 },
                     ExaminationMetadata: {
                         ExamId: 'sample-001',
                         Title: 'Sample Mathematics Examination',
@@ -125,10 +125,10 @@ const HomePage = () => {
                                     Type: 1, // SingleChoice
                                     Stem: 'What is 2 + 2?',
                                     Options: [
-                                        {Item1: 'A', Item2: '3'},
-                                        {Item1: 'B', Item2: '4'},
-                                        {Item1: 'C', Item2: '5'},
-                                        {Item1: 'D', Item2: '6'}
+                                        {Id: 'A', Text: '3'},
+                                        {Id: 'B', Text: '4'},
+                                        {Id: 'C', Text: '5'},
+                                        {Id: 'D', Text: '6'}
                                     ],
                                     Score: 10,
                                     Answer: ['B'],
@@ -148,8 +148,8 @@ const HomePage = () => {
                                     Type: 3, // Judgment
                                     Stem: 'Is 17 a prime number?',
                                     Options: [
-                                        {Item1: 'T', Item2: 'True'},
-                                        {Item1: 'F', Item2: 'False'}
+                                        {Id: 'T', Text: 'True'},
+                                        {Id: 'F', Text: 'False'}
                                     ],
                                     Score: 10,
                                     Answer: ['T'],
@@ -180,10 +180,10 @@ const HomePage = () => {
                                     Type: 1, // SingleChoice
                                     Stem: 'Solve for x: 2x + 5 = 13',
                                     Options: [
-                                        {Item1: 'A', Item2: 'x = 3'},
-                                        {Item1: 'B', Item2: 'x = 4'},
-                                        {Item1: 'C', Item2: 'x = 5'},
-                                        {Item1: 'D', Item2: 'x = 6'}
+                                        {Id: 'A', Text: 'x = 3'},
+                                        {Id: 'B', Text: 'x = 4'},
+                                        {Id: 'C', Text: 'x = 5'},
+                                        {Id: 'D', Text: 'x = 6'}
                                     ],
                                     Score: 15,
                                     Answer: ['B'],
@@ -204,10 +204,10 @@ const HomePage = () => {
                                     Type: 2, // MultipleChoice
                                     Stem: 'Which of the following are quadratic equations? Select all that apply.',
                                     Options: [
-                                        {Item1: 'A', Item2: 'y = 2x + 3'},
-                                        {Item1: 'B', Item2: 'y = x² - 4'},
-                                        {Item1: 'C', Item2: 'y = 3x² + 2x - 1'},
-                                        {Item1: 'D', Item2: 'y = x³ - 2x'}
+                                        {Id: 'A', Text: 'y = 2x + 3'},
+                                        {Id: 'B', Text: 'y = x² - 4'},
+                                        {Id: 'C', Text: 'y = 3x² + 2x - 1'},
+                                        {Id: 'D', Text: 'y = x³ - 2x'}
                                     ],
                                     Score: 15,
                                     Answer: ['B', 'C'],
@@ -303,6 +303,7 @@ const HomePage = () => {
                             </Button>
                         }
                     >
+                        <p><strong>Protocol Version:</strong> {currentExam.ExaminationVersion.Major}.{currentExam.ExaminationVersion.Minor}.{currentExam.ExaminationVersion.Patch}</p>
                         <p><strong>Subject:</strong> {currentExam.ExaminationMetadata.Subject || 'Not specified'}</p>
                         <p><strong>Description:</strong> {currentExam.ExaminationMetadata.Description || 'No description'}</p>
                         <p><strong>Total Score:</strong> {currentExam.ExaminationMetadata.TotalScore}</p>

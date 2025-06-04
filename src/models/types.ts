@@ -47,11 +47,20 @@ export enum QuestionTypes {
     Other = 10,
 }
 
+// Update Option interface to support both formats
+export interface Option {
+    Id?: string;
+    Text?: string;
+    Item1?: string;
+    Item2?: string;
+}
+
+// Update Question interface to use new Option type
 export interface Question {
     QuestionId: string | null;
     Type: QuestionTypes;
     Stem: string;
-    Options: Array<{Item1: string, Item2: string}> | null; //Options: [string, string][] | null;
+    Options: Option[] | null; // Changed from Array<{Item1: string, Item2: string}> | null
     Score: number;
     UserAnswer?: string[] | null;
     Answer: string[];
@@ -116,3 +125,9 @@ export interface AIGradingResult {
     }>;
     feedback: string;
 }
+
+export const CURRENT_PROTOCOL_VERSION = {
+    Major: 2,
+    Minor: 1,
+    Patch: 0
+};
