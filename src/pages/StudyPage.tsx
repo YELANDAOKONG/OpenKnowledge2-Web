@@ -429,16 +429,25 @@ const StudyPage = () => {
                         </Card>
                     )}
 
-                    {/* AI Feedback Area */}
+                    {/* AI Feedback Area - CSS-based approach */}
                     {aiFeedback && (
                         <Alert
                             message="AI Feedback"
-                            description={aiFeedback}
+                            description={
+                                <pre style={{
+                                    whiteSpace: 'pre-wrap',
+                                    fontFamily: 'inherit',
+                                    margin: 0
+                                }}>
+                                    {aiFeedback}
+                                </pre>
+                            }
                             type="info"
                             showIcon
                             style={{ marginBottom: 16 }}
                         />
                     )}
+
 
                     {/* Result Area - Only shown after submission */}
                     {questionSubmitted && (
