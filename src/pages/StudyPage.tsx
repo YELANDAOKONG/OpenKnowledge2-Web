@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Button, Typography, message, Space, Spin, Progress, Radio, Checkbox, Input, Form, Alert, Divider } from 'antd';
 import { LeftOutlined, RightOutlined, CheckOutlined, RobotOutlined } from '@ant-design/icons';
@@ -27,6 +27,9 @@ const StudyPage = () => {
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [aiProcessing, setAiProcessing] = useState(false);
     const [aiFeedback, setAiFeedback] = useState<string | null>(null);
+
+    // Add a flag to track form submission to prevent state reset
+    const isSubmittingRef = useRef(false);
 
     // Redirect if no exam or not in progress
     useEffect(() => {
@@ -136,6 +139,9 @@ const StudyPage = () => {
     // Handle form submission for current question
     const handleQuestionSubmit = (values: any) => {
         try {
+            // Set the ref to true to prevent useEffect from resetting our state
+            isSubmittingRef.current = true;
+
             console.log("Form submission triggered with values:", values);
             const { answer } = values;
 
@@ -176,19 +182,31 @@ const StudyPage = () => {
             // Save the answer
             saveAnswer(formattedAnswer);
 
-            // Check if answer is correct
+            // Check if answer is correct (for non-AI-judged questions)
             if (!currentQuestion.IsAiJudge) {
                 const correct = isAnswerCorrect(currentQuestion, formattedAnswer);
                 setIsCorrect(correct);
+                console.log("Answer correctness:", correct);
             } else {
                 setIsCorrect(null); // Need AI judgment
+                console.log("Answer requires AI judgment");
             }
 
+            // Set state and force re-render
             setQuestionSubmitted(true);
             console.log("Question submitted successfully, questionSubmitted set to true");
+
+            // Add a message to confirm submission
+            message.success('Answer submitted successfully');
+
         } catch (error) {
             console.error("Error during form submission:", error);
             message.error('An error occurred while submitting your answer');
+        } finally {
+            // Set a timeout to reset the ref
+            setTimeout(() => {
+                isSubmittingRef.current = false;
+            }, 500);
         }
     };
 
@@ -273,9 +291,10 @@ const StudyPage = () => {
     };
 
 
-    // Reset form when question changes
+    // Reset form when question changes - MODIFIED to prevent resetting during submission
     useEffect(() => {
-        if (currentQuestion) {
+        if (currentQuestion && !isSubmittingRef.current) {
+            console.log("Question changed, resetting form");
             // Set form values based on saved answers
             const userAnswer = currentQuestion.UserAnswer || [];
 
@@ -314,6 +333,47 @@ const StudyPage = () => {
             </Card>
         );
     }
+
+    // Helper function to check if an answer is correct
+    function isAnswerCorrect(question: Question, userAnswer: string[]): boolean {
+        if (!userAnswer || userAnswer.length === 0 || !question.Answer || question.Answer.length === 0) {
+            return false;
+        }
+
+        switch (question.Type) {
+            case QuestionTypes.SingleChoice:
+                return userAnswer[0]?.trim().toLowerCase() === question.Answer[0]?.trim().toLowerCase();
+
+            case QuestionTypes.MultipleChoice:
+                // All selected options must match exactly
+                if (userAnswer.length !== question.Answer.length) {
+                    return false;
+                }
+
+                const userOptions = new Set(userAnswer.map(a => a?.trim().toLowerCase() || ''));
+                const correctOptions = new Set(question.Answer.map(a => a?.trim().toLowerCase() || ''));
+
+                // Check if sets are equal
+                return [...userOptions].every(opt => correctOptions.has(opt)) &&
+                    [...correctOptions].every(opt => userOptions.has(opt));
+
+            case QuestionTypes.Judgment:
+                return userAnswer[0]?.trim().toLowerCase() === question.Answer[0]?.trim().toLowerCase();
+
+            case QuestionTypes.FillInTheBlank:
+                return userAnswer[0]?.trim().toLowerCase() === question.Answer[0]?.trim().toLowerCase();
+
+            default:
+                return false; // Complex types require AI judgment
+        }
+    }
+
+    // Log current state for debugging
+    console.log("Current state:", {
+        questionSubmitted,
+        isCorrect,
+        isSubmittingRef: isSubmittingRef.current
+    });
 
     return (
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
@@ -380,9 +440,9 @@ const StudyPage = () => {
                         />
                     )}
 
-                    {/* Result Area */}
+                    {/* Result Area - Only shown after submission */}
                     {questionSubmitted && (
-                        <>
+                        <div id="result-area" style={{ marginBottom: 16 }}>
                             <Alert
                                 message={isCorrect === true ? "Correct!" : isCorrect === false ? "Incorrect" : "Answer Submitted"}
                                 description={
@@ -407,22 +467,20 @@ const StudyPage = () => {
                                     </Paragraph>
                                 )}
                             </Card>
-                        </>
+                        </div>
                     )}
 
                     <Form
                         form={form}
                         name="questionForm"
                         onFinish={handleQuestionSubmit}
-                        onFinishFailed={(errorInfo) => {
-                            console.error('Form validation failed:', errorInfo);
-                            message.error('Please provide an answer before submitting');
-                        }}
+                        onFinishFailed={onFormFinishFailed}
                         layout="vertical"
                         disabled={questionSubmitted}
                     >
-                        {/* Form fields */}
+                        {/* Render question based on type */}
                         {renderQuestionInput(currentQuestion)}
+
                         <div style={{ marginTop: 16 }}>
                             {questionSubmitted ? (
                                 <Space wrap>
@@ -610,40 +668,5 @@ const StudyPage = () => {
         }
     }
 };
-
-// Helper function to check if an answer is correct
-function isAnswerCorrect(question: Question, userAnswer: string[]): boolean {
-    if (!userAnswer || userAnswer.length === 0 || !question.Answer || question.Answer.length === 0) {
-        return false;
-    }
-
-    switch (question.Type) {
-        case QuestionTypes.SingleChoice:
-            return userAnswer[0]?.trim().toLowerCase() === question.Answer[0]?.trim().toLowerCase();
-
-        case QuestionTypes.MultipleChoice:
-            // All selected options must match exactly
-            if (userAnswer.length !== question.Answer.length) {
-                return false;
-            }
-
-            const userOptions = new Set(userAnswer.map(a => a?.trim().toLowerCase() || ''));
-            const correctOptions = new Set(question.Answer.map(a => a?.trim().toLowerCase() || ''));
-
-            // Check if sets are equal
-            return [...userOptions].every(opt => correctOptions.has(opt)) &&
-                [...correctOptions].every(opt => userOptions.has(opt));
-
-        case QuestionTypes.Judgment:
-            return userAnswer[0]?.trim().toLowerCase() === question.Answer[0]?.trim().toLowerCase();
-
-        case QuestionTypes.FillInTheBlank:
-            return userAnswer[0]?.trim().toLowerCase() === question.Answer[0]?.trim().toLowerCase();
-
-        default:
-            return false; // Complex types require AI judgment
-    }
-}
-
 
 export default StudyPage;

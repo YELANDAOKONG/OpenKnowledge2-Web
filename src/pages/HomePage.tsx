@@ -16,6 +16,7 @@ const HomePage = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
     const [showUploadForm, setShowUploadForm] = useState(false);
+
     const handleUpload = async () => {
         const file = fileList[0] as RcFile;
         if (!file) {
@@ -71,8 +72,16 @@ const HomePage = () => {
         navigate('/exam');
     };
 
+    // Fixed function to navigate based on study mode
     const handleContinueExam = () => {
-        navigate(studyMode ? '/study' : '/exam');
+        // Check the current mode and navigate accordingly
+        if (studyMode) {
+            console.log("Continuing in study mode");
+            navigate('/study');
+        } else {
+            console.log("Continuing in exam mode");
+            navigate('/exam');
+        }
     };
 
     const handleViewResults = () => {
@@ -80,6 +89,8 @@ const HomePage = () => {
     };
 
     // 添加一个加载新试卷的功能
+    const { modal } = AntApp.useApp(); // 获取上下文化的modal
+
     const handleLoadNewExam = () => {
         if (examInProgress) {
             // Modal
@@ -96,9 +107,6 @@ const HomePage = () => {
             setShowUploadForm(true);
         }
     };
-
-    // Sample exam for demonstration
-    const { modal } = AntApp.useApp(); // 获取上下文化的modal
 
     // 重写样例考试加载函数
     const loadSampleExam = () => {
@@ -249,6 +257,9 @@ const HomePage = () => {
         });
     };
 
+    // Debug output for study mode
+    console.log("Current study mode:", studyMode);
+
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <Card>
@@ -318,6 +329,9 @@ const HomePage = () => {
                         <p><strong>Description:</strong> {currentExam.ExaminationMetadata.Description || 'No description'}</p>
                         <p><strong>Total Score:</strong> {currentExam.ExaminationMetadata.TotalScore}</p>
                         <p><strong>Number of Sections:</strong> {currentExam.ExaminationSections.length}</p>
+                        {examInProgress && (
+                            <p><strong>Current Mode:</strong> {studyMode ? 'Study Mode' : 'Exam Mode'}</p>
+                        )}
 
                         <div style={{ marginTop: 16 }}>
                             <Space>
