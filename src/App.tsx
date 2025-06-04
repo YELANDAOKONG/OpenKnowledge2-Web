@@ -6,6 +6,7 @@ import ConfigPage from './pages/ConfigPage';
 import HomePage from './pages/HomePage';
 import ExamPage from './pages/ExamPage';
 import ResultsPage from './pages/ResultsPage';
+import UpgradePage from './pages/UpgradePage';
 import Layout from './components/Layout';
 
 // const getBasename = () => {
@@ -41,6 +42,7 @@ function App() {
                             <Route path="config" element={<ConfigPage />} />
                             <Route path="exam" element={<ExamPage />} />
                             <Route path="results" element={<ResultsPage />} />
+                            <Route path="upgrade" element={<UpgradePage />} />
                         </Route>
                     </Routes>
                 </Router>

@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
-import { HomeOutlined, SettingOutlined, FileOutlined, TrophyOutlined } from '@ant-design/icons';
+import { HomeOutlined, SettingOutlined, FileOutlined, TrophyOutlined, ToolOutlined  } from '@ant-design/icons';
 import { useExamStore } from '../stores/examStore';
 
 const { Header } = Layout;
@@ -21,6 +21,11 @@ const AppHeader = () => {
             icon: <SettingOutlined />,
             label: 'Settings',
         },
+        {
+            key: '/upgrade',
+            icon: <ToolOutlined />,
+            label: 'Upgrade Tool',
+        }
     ];
 
     if (currentExam && examInProgress) {
