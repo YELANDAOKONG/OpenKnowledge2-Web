@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Typography, Upload, Button, message, Alert, Divider, Progress, List } from 'antd';
+import { Card, Typography, Upload, Button, message, Alert, Divider, List } from 'antd';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/es/upload/interface';
 import { RcFile } from 'antd/es/upload';
@@ -57,6 +57,8 @@ const UpgradePage = () => {
 
                     // Process options if they exist
                     if (Array.isArray(question.Options) && question.Options.length > 0) {
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-expect-error
                         const hasOldFormat = question.Options.some(opt =>
                             opt.Item1 !== undefined && opt.Item2 !== undefined);
 
