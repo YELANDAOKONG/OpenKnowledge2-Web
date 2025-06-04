@@ -88,7 +88,7 @@ const ResultsPage = () => {
                     const feedbackId = question.QuestionId || '';
                     const feedback = aiGradingResults[feedbackId];
                     if (feedback) {
-                        content += "AI Feedback:\n";
+                        content += "AI 反馈：\n";
                         content += `${feedback}\n\n`;
                     }
                 }
@@ -334,18 +334,18 @@ const ResultsPage = () => {
     // Section table columns
     const sectionColumns = [
         {
-            title: 'Section',
+            title: '章节',
             dataIndex: 'title',
             key: 'title',
         },
         {
-            title: 'Score',
+            title: '分数',
             key: 'score',
             render: (_text: unknown, record: { score: number; maxScore: number }) =>
                 `${record.score} / ${record.maxScore}`,
         },
         {
-            title: 'Percentage',
+            title: '百分比',
             key: 'percentage',
             render: (_text: unknown, record: { percentage: number }) => (
                 <Progress percent={record.percentage} status={record.percentage >= 60 ? 'success' : 'exception'} />
@@ -356,13 +356,13 @@ const ResultsPage = () => {
     // Question table columns
     const questionColumns = [
         {
-            title: 'Section',
+            title: '章节',
             dataIndex: 'sectionTitle',
             key: 'sectionTitle',
             width: 150,
         },
         {
-            title: 'Question',
+            title: '题目',
             dataIndex: 'stem',
             key: 'stem',
             render: (text: string) => (
@@ -372,20 +372,20 @@ const ResultsPage = () => {
             ),
         },
         {
-            title: 'Type',
+            title: '类型',
             dataIndex: 'type',
             key: 'type',
             width: 120,
         },
         {
-            title: 'Score',
+            title: '分数',
             key: 'score',
             width: 100,
             render: (_text: unknown, record: { score: number; maxScore: number }) =>
                 `${record.score} / ${record.maxScore}`,
         },
         {
-            title: 'Status',
+            title: '状态',
             key: 'status',
             width: 120,
             render: (_text: unknown, record: {
@@ -395,16 +395,16 @@ const ResultsPage = () => {
             }) => {
                 if (record.isAiGraded) {
                     if (!record.status || record.status === 'pending') {
-                        return <Tag icon={<SyncOutlined spin />} color="processing">Pending AI</Tag>;
+                        return <Tag icon={<SyncOutlined spin />} color="processing">AI 待处理...</Tag>;
                     } else if (record.status === 'completed') {
-                        return <Tag icon={<RobotOutlined />} color="success">AI Graded</Tag>;
+                        return <Tag icon={<RobotOutlined />} color="success">AI 已评分</Tag>;
                     } else {
-                        return <Tag icon={<CloseCircleOutlined />} color="error">Grading Error</Tag>;
+                        return <Tag icon={<CloseCircleOutlined />} color="error">评分出错</Tag>;
                     }
                 } else {
                     return record.isCorrect
-                        ? <Tag icon={<CheckCircleOutlined />} color="success">Correct</Tag>
-                        : <Tag icon={<CloseCircleOutlined />} color="error">Incorrect</Tag>;
+                        ? <Tag icon={<CheckCircleOutlined />} color="success">正确</Tag>
+                        : <Tag icon={<CloseCircleOutlined />} color="error">错误</Tag>;
                 }
             },
         },
@@ -413,12 +413,12 @@ const ResultsPage = () => {
     return (
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
             <Card>
-                <Title level={2}>Examination Results</Title>
+                <Title level={2}>考试结果</Title>
                 <Paragraph>
-                    Exam: {currentExam.ExaminationMetadata.Title}
+                    试卷： {currentExam.ExaminationMetadata.Title}
                 </Paragraph>
                 <Paragraph>
-                    Protocol Version: {currentExam.ExaminationVersion.Major}.{currentExam.ExaminationVersion.Minor}.{currentExam.ExaminationVersion.Patch}
+                   协议版本： {currentExam.ExaminationVersion.Major}.{currentExam.ExaminationVersion.Minor}.{currentExam.ExaminationVersion.Patch}
                 </Paragraph>
 
                 <Card style={{ marginBottom: 24, textAlign: 'center' }}>
@@ -437,16 +437,16 @@ const ResultsPage = () => {
                     <div style={{ marginTop: 16 }}>
                         <Text strong>
                             {scoreRecord.ObtainedScore >= (scoreRecord.TotalScore * 0.6)
-                                ? 'Congratulations! You passed the exam.'
-                                : 'You did not pass the exam. Keep practicing!'}
+                                ? '恭喜！你通过了考试。'
+                                : '你没有通过考试。继续努力！'}
                         </Text>
                     </div>
                 </Card>
 
                 {aiGradedQuestions.length > 0 && (
-                    <Card title="AI Grading" style={{ marginBottom: 24 }}>
+                    <Card title="AI 评分" style={{ marginBottom: 24 }}>
                         <Paragraph>
-                            This exam contains {aiGradedQuestions.length} question(s) that require AI grading.
+                            此试卷包含 {aiGradedQuestions.length} 个问题需要 AI 评分。
                         </Paragraph>
 
                         <Button
@@ -457,13 +457,13 @@ const ResultsPage = () => {
                             disabled={aiGradingInProgress}
                         >
                             {Object.values(gradingStatus).some(status => status === 'completed')
-                                ? 'Continue AI Grading'
-                                : 'Start AI Grading'}
+                                ? '继续 AI 评分'
+                                : '开始 AI 评分'}
                         </Button>
                     </Card>
                 )}
 
-                <Divider orientation="left">Section Scores</Divider>
+                <Divider orientation="left">章节分数</Divider>
                 <Table
                     dataSource={sectionData}
                     columns={sectionColumns}
@@ -471,15 +471,15 @@ const ResultsPage = () => {
                     style={{ marginBottom: 24 }}
                 />
 
-                <Divider orientation="left">Question Details</Divider>
+                <Divider orientation="left">题目详情</Divider>
                 <Table
                     dataSource={questionData}
                     columns={questionColumns}
                     expandable={{
                         expandedRowRender: (record) => (
                             <div>
-                                <p><strong>Your Answer:</strong> {record.userAnswer || 'No answer provided'}</p>
-                                <p><strong>Correct Answer:</strong> {record.correctAnswer}</p>
+                                <p><strong>你的答案：</strong> {record.userAnswer || '未提供答案'}</p>
+                                <p><strong>正确答案：</strong> {record.correctAnswer}</p>
                                 {record.feedback && (
                                     <div>
                                         <p><strong>AI Feedback:</strong></p>
@@ -496,24 +496,24 @@ const ResultsPage = () => {
                 <div style={{ marginTop: 24, display: 'flex', justifyContent: 'center' }}>
                     <Space>
                         <Button onClick={() => navigate('/')}>
-                            Return to Home
+                            回到主页
                         </Button>
                         <Button type="primary" onClick={() => window.print()}>
-                            Print Results
+                            打印结果
                         </Button>
                         <Button
                             type="primary"
                             icon={<DownloadOutlined />}
                             onClick={downloadExamJson}
                         >
-                            Download Exam with Answers
+                            下载带有答案的试卷文件
                         </Button>
                         <Button
                             type="primary"
                             icon={<DownloadOutlined />}
                             onClick={downloadExamWithAnswers}
                         >
-                            Download Exam Markdown
+                            下载试卷 Markdown
                         </Button>
                     </Space>
                 </div>
@@ -525,17 +525,17 @@ const ResultsPage = () => {
 // Helper function to get a human-readable question type
 function getQuestionTypeText(type: QuestionTypes): string {
     switch (type) {
-        case QuestionTypes.SingleChoice: return 'Single Choice';
-        case QuestionTypes.MultipleChoice: return 'Multiple Choice';
-        case QuestionTypes.Judgment: return 'True/False';
-        case QuestionTypes.FillInTheBlank: return 'Fill in the Blank';
-        case QuestionTypes.Math: return 'Math';
-        case QuestionTypes.Essay: return 'Essay';
-        case QuestionTypes.ShortAnswer: return 'Short Answer';
-        case QuestionTypes.Calculation: return 'Calculation';
-        case QuestionTypes.Complex: return 'Complex';
-        case QuestionTypes.Other: return 'Other';
-        default: return 'Unknown';
+        case QuestionTypes.SingleChoice: return '单选题';
+        case QuestionTypes.MultipleChoice: return '多选题';
+        case QuestionTypes.Judgment: return '判断题';
+        case QuestionTypes.FillInTheBlank: return '填空题';
+        case QuestionTypes.Math: return '数学题';
+        case QuestionTypes.Essay: return '作文题';
+        case QuestionTypes.ShortAnswer: return '简答题';
+        case QuestionTypes.Calculation: return '计算题';
+        case QuestionTypes.Complex: return '符合题';
+        case QuestionTypes.Other: return '其他';
+        default: return '未知';
     }
 }
 

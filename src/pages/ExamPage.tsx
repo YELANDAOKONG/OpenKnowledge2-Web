@@ -88,8 +88,8 @@ const ExamPage = () => {
     const handleSubmit = () => {
         // 使用 modal API 而不是静态方法
         modal.confirm({
-            title: 'Submit Examination',
-            content: 'Are you sure you want to submit this examination? This action cannot be undone.',
+            title: '提交试卷',
+            content: '你确定要提交这份考试吗？此操作无法撤销。',
             onOk: async () => {
                 try {
                     console.log("Modal confirmed, ending exam..."); // 调试日志
@@ -108,8 +108,8 @@ const ExamPage = () => {
                         console.log("Has AI graded questions, showing info modal..."); // 调试日志
                         // 使用 modal.info 替代 Modal.info
                         modal.info({
-                            title: 'AI Grading Required',
-                            content: 'Some questions require AI grading. Please navigate to the Results page to initiate AI grading.',
+                            title: '需要 AI 评分',
+                            content: '部分题目需由AI评分。请前往结果页面启动AI评分功能。',
                             onOk: () => {
                                 console.log("Info modal OK clicked, navigating..."); // 调试日志
                                 navigate('/results');
@@ -214,13 +214,13 @@ const ExamPage = () => {
                     <Progress percent={progressPercentage} status="active" />
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
-                        <Text>Section: {currentSection.Title}</Text>
-                        <Text>Question {currentQuestionNumber} of {totalQuestions}</Text>
+                        <Text>区域： {currentSection.Title}</Text>
+                        <Text>问题 {currentQuestionNumber} 共 {totalQuestions}</Text>
                     </div>
                 </div>
 
                 <Card
-                    title={`Question ${currentQuestionNumber} (${currentQuestion.Score} points)`}
+                    title={`题目 ${currentQuestionNumber} (${currentQuestion.Score} 分)`}
                     style={{ marginBottom: 16 }}
                 >
                     <Paragraph>
@@ -276,7 +276,7 @@ const ExamPage = () => {
                                 disabled={currentSectionIndex === 0 && currentQuestionIndex === 0}
                                 icon={<LeftOutlined />}
                             >
-                                Previous
+                                上一题
                             </Button>
 
                             <Space>
@@ -284,7 +284,7 @@ const ExamPage = () => {
                                     type="primary"
                                     htmlType="submit"
                                 >
-                                    Save & Next
+                                    保存 & 下一题
                                 </Button>
 
                                 {currentSectionIndex === currentExam.ExaminationSections.length - 1 &&
@@ -295,7 +295,7 @@ const ExamPage = () => {
                                             loading={submitting}
                                             icon={<CheckOutlined />}
                                         >
-                                            Submit Exam
+                                            提交试卷
                                         </Button>
                                     )}
                             </Space>
@@ -308,7 +308,7 @@ const ExamPage = () => {
                                 }
                                 icon={<RightOutlined />}
                             >
-                                Next
+                                下一题
                             </Button>
                         </div>
                     </Form>
@@ -336,7 +336,7 @@ const ExamPage = () => {
         switch (question.Type) {
             case QuestionTypes.SingleChoice:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please select an answer' }]}>
+                    <Form.Item name="answer" rules={[{ required: true, message: '请选择一个答案' }]}>
                         <Radio.Group>
                             {options.map((option, index) => {
                                 const {key, value} = getOptionKeyValue(option);
@@ -356,7 +356,7 @@ const ExamPage = () => {
                 );
             case QuestionTypes.MultipleChoice:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please select at least one answer' }]}>
+                    <Form.Item name="answer" rules={[{ required: true, message: '请选择至少一个答案' }]}>
                         <Checkbox.Group style={{ width: '100%' }}>
                             {options.map((option, index) => {
                                 const {key, value} = getOptionKeyValue(option);
@@ -376,7 +376,7 @@ const ExamPage = () => {
                 );
             case QuestionTypes.Judgment:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please select an answer' }]}>
+                    <Form.Item name="answer" rules={[{ required: true, message: '请选择一个答案' }]}>
                         <Radio.Group>
                             {/* Use options from question if available */}
                             {Array.isArray(question.Options) && question.Options.map((option, index) => {
@@ -406,16 +406,16 @@ const ExamPage = () => {
 
             case QuestionTypes.FillInTheBlank:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please enter your answer' }]}>
-                        <Input placeholder="Enter your answer" />
+                    <Form.Item name="answer" rules={[{ required: true, message: '请输入答案' }]}>
+                        <Input placeholder="输入答案..." />
                     </Form.Item>
                 );
 
             case QuestionTypes.Essay:
             case QuestionTypes.ShortAnswer:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please enter your answer' }]}>
-                        <TextArea rows={10} placeholder="Enter your answer" />
+                    <Form.Item name="answer" rules={[{ required: true, message: '请输入答案' }]}>
+                        <TextArea rows={10} placeholder="输入答案..." />
                     </Form.Item>
                 );
 
@@ -425,8 +425,8 @@ const ExamPage = () => {
             case QuestionTypes.Other:
             default:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please enter your answer' }]}>
-                        <TextArea rows={6} placeholder="Enter your answer" />
+                    <Form.Item name="answer" rules={[{ required: true, message: '请输入答案' }]}>
+                        <TextArea rows={6} placeholder="输入答案..." />
                     </Form.Item>
                 );
         }

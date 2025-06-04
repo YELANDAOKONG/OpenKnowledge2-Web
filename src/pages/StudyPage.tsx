@@ -109,8 +109,8 @@ const StudyPage = () => {
 
     const handleSubmit = () => {
         modal.confirm({
-            title: 'End Study Session',
-            content: 'Are you sure you want to end this study session? Your progress will be saved.',
+            title: '结束学习会话',
+            content: '您确定要结束本学习课程吗？您的学习进度将被保存。',
             onOk: async () => {
                 try {
                     setSubmitting(true);
@@ -231,7 +231,7 @@ const StudyPage = () => {
 
             const result = await openAIService.gradeQuestion(currentQuestion, config);
 
-            setAiFeedback(`AI Evaluation: ${result.feedback}`);
+            setAiFeedback(`AI 评估： ${result.feedback}`);
             setIsCorrect(result.isCorrect);
 
         } catch (error) {
@@ -386,13 +386,13 @@ const StudyPage = () => {
                     <Progress percent={progressPercentage} status="active" />
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
-                        <Text>Section: {currentSection.Title}</Text>
-                        <Text>Question {currentQuestionNumber} of {totalQuestions}</Text>
+                        <Text>章节： {currentSection.Title}</Text>
+                        <Text>问题 {currentQuestionNumber} 共 {totalQuestions}</Text>
                     </div>
                 </div>
 
                 <Card
-                    title={`Question ${currentQuestionNumber} (${currentQuestion.Score} points)`}
+                    title={`问题 ${currentQuestionNumber} (${currentQuestion.Score} 分)`}
                     style={{ marginBottom: 16 }}
                 >
                     <Paragraph>
@@ -436,7 +436,7 @@ const StudyPage = () => {
                     {/* AI Feedback Area - CSS-based approach */}
                     {aiFeedback && (
                         <Alert
-                            message="AI Feedback"
+                            message="AI 反馈"
                             description={
                                 <pre style={{
                                     whiteSpace: 'pre-wrap',
@@ -457,10 +457,10 @@ const StudyPage = () => {
                     {questionSubmitted && (
                         <div id="result-area" style={{ marginBottom: 16 }}>
                             <Alert
-                                message={isCorrect === true ? "Correct!" : isCorrect === false ? "Incorrect" : "Answer Submitted"}
+                                message={isCorrect === true ? "正确！" : isCorrect === false ? "错误" : "已提交答案"}
                                 description={
                                     isCorrect === null ? (
-                                        "This question requires AI judgment. Use the Smart Check feature to evaluate your answer."
+                                        "本题需要 AI 评分。请使用智能检查功能评估您的答案。"
                                     ) : null
                                 }
                                 type={isCorrect === true ? "success" : isCorrect === false ? "error" : "info"}
@@ -468,7 +468,7 @@ const StudyPage = () => {
                                 style={{ marginBottom: 16 }}
                             />
 
-                            <Card type="inner" title="Reference Answer" style={{ marginBottom: 16 }}>
+                            <Card type="inner" title="参考答案" style={{ marginBottom: 16 }}>
                                 <Paragraph>
                                     {currentQuestion.Answer.join(', ')}
                                 </Paragraph>
@@ -504,7 +504,7 @@ const StudyPage = () => {
                                         loading={aiProcessing && aiFeedback === null}
                                         disabled={aiProcessing}
                                     >
-                                        Smart Check
+                                        智能检查
                                     </Button>
                                     <Button
                                         icon={<RobotOutlined />}
@@ -512,7 +512,7 @@ const StudyPage = () => {
                                         loading={aiProcessing && aiFeedback === null}
                                         disabled={aiProcessing}
                                     >
-                                        Smart Q&A
+                                        智能答疑
                                     </Button>
                                     <Button
                                         icon={<RobotOutlined />}
@@ -520,7 +520,7 @@ const StudyPage = () => {
                                         loading={aiProcessing && aiFeedback === null}
                                         disabled={aiProcessing}
                                     >
-                                        Question Verification
+                                        题干验证
                                     </Button>
                                 </Space>
                             ) : (
@@ -529,7 +529,7 @@ const StudyPage = () => {
                                     htmlType="submit"
                                     onClick={() => console.log("Submit button clicked, current form values:", form.getFieldsValue())}
                                 >
-                                    Submit Answer
+                                    提交答案
                                 </Button>
                             )}
                         </div>
@@ -542,7 +542,7 @@ const StudyPage = () => {
                                 disabled={aiProcessing || (currentSectionIndex === 0 && currentQuestionIndex === 0)}
                                 icon={<LeftOutlined />}
                             >
-                                Previous
+                                上一题
                             </Button>
 
                             <Button
@@ -551,7 +551,7 @@ const StudyPage = () => {
                                 loading={submitting}
                                 icon={<CheckOutlined />}
                             >
-                                End Study Session
+                                结束学习会话
                             </Button>
 
                             <Button
@@ -562,7 +562,7 @@ const StudyPage = () => {
                                 )}
                                 icon={<RightOutlined />}
                             >
-                                Next
+                                下一题
                             </Button>
                         </div>
                     </Form>
@@ -589,7 +589,7 @@ const StudyPage = () => {
         switch (question.Type) {
             case QuestionTypes.SingleChoice:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please select an answer' }]}>
+                    <Form.Item name="answer" rules={[{ required: true, message: '请选择一个答案' }]}>
                         <Radio.Group>
                             {options.map((option, index) => {
                                 const {key, value} = getOptionKeyValue(option);
@@ -609,7 +609,7 @@ const StudyPage = () => {
                 );
             case QuestionTypes.MultipleChoice:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please select at least one answer' }]}>
+                    <Form.Item name="answer" rules={[{ required: true, message: '请至少选择一个答案' }]}>
                         <Checkbox.Group style={{ width: '100%' }}>
                             {options.map((option, index) => {
                                 const {key, value} = getOptionKeyValue(option);
@@ -629,7 +629,7 @@ const StudyPage = () => {
                 );
             case QuestionTypes.Judgment:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please select an answer' }]}>
+                    <Form.Item name="answer" rules={[{ required: true, message: '请选择一个答案' }]}>
                         <Radio.Group>
                             {/* Use options from question if available */}
                             {Array.isArray(question.Options) && question.Options.map((option, index) => {
@@ -657,15 +657,15 @@ const StudyPage = () => {
                 );
             case QuestionTypes.FillInTheBlank:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please enter your answer' }]}>
-                        <Input placeholder="Enter your answer" />
+                    <Form.Item name="answer" rules={[{ required: true, message: '请输入你的答案' }]}>
+                        <Input placeholder="请输入答案..." />
                     </Form.Item>
                 );
             case QuestionTypes.Essay:
             case QuestionTypes.ShortAnswer:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please enter your answer' }]}>
-                        <TextArea rows={10} placeholder="Enter your answer" />
+                    <Form.Item name="answer" rules={[{ required: true, message: '请输入你的答案' }]}>
+                        <TextArea rows={10} placeholder="请输入答案..." />
                     </Form.Item>
                 );
             case QuestionTypes.Math:
@@ -674,8 +674,8 @@ const StudyPage = () => {
             case QuestionTypes.Other:
             default:
                 return (
-                    <Form.Item name="answer" rules={[{ required: true, message: 'Please enter your answer' }]}>
-                        <TextArea rows={6} placeholder="Enter your answer" />
+                    <Form.Item name="answer" rules={[{ required: true, message: '请输入你的答案' }]}>
+                        <TextArea rows={6} placeholder="请输入答案..." />
                     </Form.Item>
                 );
         }

@@ -95,8 +95,8 @@ const HomePage = () => {
         if (examInProgress) {
             // Modal
             modal.confirm({
-                title: 'Are you sure?',
-                content: 'You have an exam in progress. Loading a new exam will lose your current progress.',
+                title: '你确定吗？',
+                content: '您有一个考试正在进行中。加载新考试将丢失当前进度。',
                 onOk: () => {
                     resetExam();
                     setShowUploadForm(true);
@@ -112,8 +112,8 @@ const HomePage = () => {
     const loadSampleExam = () => {
         // 使用上下文化的modal
         modal.confirm({
-            title: 'Load Sample Exam',
-            content: 'This will load a sample math examination for demonstration purposes. Continue?',
+            title: '加载示例试卷',
+            content: '这将加载一份数学考试样卷用于系统演示。是否继续？',
             onOk: () => {
                 // 首先重置当前考试
                 resetExam();
@@ -265,11 +265,11 @@ const HomePage = () => {
             <Card>
                 <Title level={2}>Open Knowledge Examination System</Title>
                 <Paragraph>
-                    Welcome to the examination system. You can upload an examination file or load a sample exam to get started.
+                    欢迎使用考试系统。您可以上传考试文件或加载示例试卷以开始。
                 </Paragraph>
 
                 {(!currentExam || showUploadForm) && (
-                    <Card title="Load Examination" style={{ marginBottom: 16 }}>
+                    <Card title="加载试卷" style={{ marginBottom: 16 }}>
                         <Upload
                             fileList={fileList}
                             beforeUpload={(file) => {
@@ -282,7 +282,7 @@ const HomePage = () => {
                             maxCount={1}
                             accept=".json"
                         >
-                            <Button icon={<UploadOutlined />}>Select Exam File</Button>
+                            <Button icon={<UploadOutlined />}>选择试卷文件</Button>
                         </Upload>
 
                         <div style={{ marginTop: 16 }}>
@@ -293,17 +293,17 @@ const HomePage = () => {
                                     disabled={fileList.length === 0}
                                     loading={uploading}
                                 >
-                                    Upload
+                                    上传
                                 </Button>
                                 <Button
                                     icon={<FileOutlined />}
                                     onClick={loadSampleExam}
                                 >
-                                    Load Sample Exam
+                                    加载示例试卷
                                 </Button>
                                 {showUploadForm && (
                                     <Button onClick={() => setShowUploadForm(false)}>
-                                        Cancel
+                                        取消
                                     </Button>
                                 )}
                             </Space>
@@ -320,42 +320,42 @@ const HomePage = () => {
                                 icon={<ReloadOutlined />}
                                 onClick={handleLoadNewExam}
                             >
-                                Load New Exam
+                                加载新试卷
                             </Button>
                         }
                     >
-                        <p><strong>Protocol Version:</strong> {currentExam.ExaminationVersion.Major}.{currentExam.ExaminationVersion.Minor}.{currentExam.ExaminationVersion.Patch}</p>
-                        <p><strong>Subject:</strong> {currentExam.ExaminationMetadata.Subject || 'Not specified'}</p>
-                        <p><strong>Description:</strong> {currentExam.ExaminationMetadata.Description || 'No description'}</p>
-                        <p><strong>Total Score:</strong> {currentExam.ExaminationMetadata.TotalScore}</p>
-                        <p><strong>Number of Sections:</strong> {currentExam.ExaminationSections.length}</p>
+                        <p><strong>协议版本：</strong> {currentExam.ExaminationVersion.Major}.{currentExam.ExaminationVersion.Minor}.{currentExam.ExaminationVersion.Patch}</p>
+                        <p><strong>科目：</strong> {currentExam.ExaminationMetadata.Subject || 'Not specified'}</p>
+                        <p><strong>描述：</strong> {currentExam.ExaminationMetadata.Description || 'No description'}</p>
+                        <p><strong>总分：</strong> {currentExam.ExaminationMetadata.TotalScore}</p>
+                        <p><strong>区域数：</strong> {currentExam.ExaminationSections.length}</p>
                         {examInProgress && (
-                            <p><strong>Current Mode:</strong> {studyMode ? 'Study Mode' : 'Exam Mode'}</p>
+                            <p><strong>当前模式：</strong> {studyMode ? '学习模式' : '考试模式'}</p>
                         )}
 
                         <div style={{ marginTop: 16 }}>
                             <Space>
                                 {examInProgress ? (
                                     <Button type="primary" onClick={handleContinueExam}>
-                                        Continue {studyMode ? "Study" : "Exam"}
+                                        继续 {studyMode ? "学习" : "考试"}
                                     </Button>
                                 ) : (
                                     <>
                                         <Button type="primary" onClick={handleStartExam}>
-                                            Start Exam
+                                            开始考试
                                         </Button>
                                         <Button
                                             type="primary"
                                             icon={<BookOutlined />}
                                             onClick={handleStartStudyMode}
                                         >
-                                            Study Mode
+                                            学习模式
                                         </Button>
                                     </>
                                 )}
                                 {!examInProgress && (
                                     <Button onClick={handleViewResults}>
-                                        View Results
+                                        查看结果
                                     </Button>
                                 )}
                             </Space>

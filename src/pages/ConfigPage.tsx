@@ -36,10 +36,10 @@ const ConfigPage = () => {
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <Card>
-                <Title level={2}>System Configuration</Title>
+                <Title level={2}>系统设置</Title>
                 <Paragraph>
-                    Please configure your OpenAI API settings to enable AI-powered exam grading.
-                    This information will be stored locally in your browser.
+                    请配置您的OpenAI API设置以启用 AI 驱动的考试评分辅助等智能功能。
+                    此信息将仅存储在您的浏览器本地。
                 </Paragraph>
 
                 <Form
@@ -51,7 +51,7 @@ const ConfigPage = () => {
                 >
                     <Form.Item
                         name="OpenAiApiUrl"
-                        label="OpenAI API URL"
+                        label="OpenAI API 地址"
                         rules={[{ required: true, message: 'Please enter the OpenAI API URL' }]}
                     >
                         <Input placeholder="https://api.openai.com/v1" />
@@ -59,7 +59,7 @@ const ConfigPage = () => {
 
                     <Form.Item
                         name="OpenAiApiKey"
-                        label="OpenAI API Key"
+                        label="OpenAI API 密钥"
                         rules={[{ required: true, message: 'Please enter your OpenAI API key' }]}
                     >
                         <Input.Password placeholder="sk-..." />
@@ -67,7 +67,7 @@ const ConfigPage = () => {
 
                     <Form.Item
                         name="OpenAiModel"
-                        label="OpenAI Model"
+                        label="OpenAI 模型名称"
                         rules={[{ required: true, message: 'Please enter the model name' }]}
                     >
                         <Input placeholder="gpt-3.5-turbo" />
@@ -75,7 +75,7 @@ const ConfigPage = () => {
 
                     <Form.Item
                         name="OpenAiModelTemperature"
-                        label="Model Temperature"
+                        label="模型温度"
                         rules={[{ required: true, message: 'Please enter a temperature value' }]}
                     >
                         <InputNumber
@@ -89,7 +89,7 @@ const ConfigPage = () => {
 
                     <Form.Item>
                         <Button type="primary" htmlType="submit" loading={loading}>
-                            Save Configuration
+                            保存设置
                         </Button>
                     </Form.Item>
                 </Form>

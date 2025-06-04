@@ -21,17 +21,17 @@ const AppHeader = () => {
         {
             key: '/',
             icon: <HomeOutlined />,
-            label: 'Home',
+            label: '主页',
         },
         {
             key: '/config',
             icon: <SettingOutlined />,
-            label: 'Settings',
+            label: '设置',
         },
         {
             key: '/upgrade',
             icon: <ToolOutlined />,
-            label: 'Upgrade Tool',
+            label: '升级工具',
         }
     ];
 
@@ -40,7 +40,7 @@ const AppHeader = () => {
         items.push({
             key: studyMode ? '/study' : '/exam',
             icon: studyMode ? <BookOutlined /> : <FileOutlined />,
-            label: studyMode ? 'Study Mode' : 'Current Exam',
+            label: studyMode ? '学习模式' : '当前考试',
         });
     }
 
@@ -49,7 +49,7 @@ const AppHeader = () => {
         items.push({
             key: '/results',
             icon: <TrophyOutlined />,
-            label: 'Results',
+            label: '结果',
         });
     }
 

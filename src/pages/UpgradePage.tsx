@@ -122,21 +122,22 @@ const UpgradePage = () => {
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <Card>
-                <Title level={2}>Protocol Upgrade Tool</Title>
+                <Title level={2}>协议迁移工具</Title>
                 <Paragraph>
-                    This tool upgrades examination files from older protocol version (like 1.0.0) to the current version {CURRENT_PROTOCOL_VERSION.Major}.{CURRENT_PROTOCOL_VERSION.Minor}.{CURRENT_PROTOCOL_VERSION.Patch}.
-                    The main difference is in how options are stored in questions, changing from Item1/Item2 format to Id/Text format.
+                    此工具可将旧版协议（如1.0.0）的考试文件升级至当前版本 {CURRENT_PROTOCOL_VERSION.Major}.{CURRENT_PROTOCOL_VERSION.Minor}.{CURRENT_PROTOCOL_VERSION.Patch}。
+                    <br/>
+                    当前协议之间的主要差异在于题目中选项的存储方式，从 Item1 / Item2 格式转变为 Id / Text 格式。
                 </Paragraph>
 
                 <Alert
-                    message="Important"
-                    description="This tool doesn't modify your original file. After upgrading, you'll be able to download the updated version."
+                    message="重要提示"
+                    description="该工具不会修改您的原始文件。升级完成后，您将能够下载更新后的版本。"
                     type="info"
                     showIcon
                     style={{ marginBottom: 16 }}
                 />
 
-                <Card title="Step 1: Select Examination File" style={{ marginBottom: 16 }}>
+                <Card title="第一步：选择试卷文件" style={{ marginBottom: 16 }}>
                     <Upload
                         fileList={fileList}
                         beforeUpload={(file) => {
@@ -152,11 +153,11 @@ const UpgradePage = () => {
                         maxCount={1}
                         accept=".json"
                     >
-                        <Button icon={<UploadOutlined />}>Select Exam File (v1.x)</Button>
+                        <Button icon={<UploadOutlined />}>选择试卷文件 (v1.x.x)</Button>
                     </Upload>
                 </Card>
 
-                <Card title="Step 2: Upgrade Protocol Version" style={{ marginBottom: 16 }}>
+                <Card title="第二步：升级协议版本" style={{ marginBottom: 16 }}>
                     <Button
                         type="primary"
                         onClick={handleUpgrade}
@@ -164,12 +165,12 @@ const UpgradePage = () => {
                         loading={uploading}
                         style={{ marginBottom: 16 }}
                     >
-                        Upgrade to v{CURRENT_PROTOCOL_VERSION.Major}.{CURRENT_PROTOCOL_VERSION.Minor}.{CURRENT_PROTOCOL_VERSION.Patch}
+                        迁移到 v{CURRENT_PROTOCOL_VERSION.Major}.{CURRENT_PROTOCOL_VERSION.Minor}.{CURRENT_PROTOCOL_VERSION.Patch}
                     </Button>
 
                     {upgradeLog.length > 0 && (
                         <div style={{ marginTop: 16 }}>
-                            <Divider>Upgrade Log</Divider>
+                            <Divider>迁移日志</Divider>
                             <List
                                 bordered
                                 dataSource={upgradeLog}
@@ -190,19 +191,19 @@ const UpgradePage = () => {
                 </Card>
 
                 {convertedExam && (
-                    <Card title="Step 3: Download Upgraded File">
+                    <Card title="第三步：下载升级后的文件">
                         <Button
                             type="primary"
                             icon={<DownloadOutlined />}
                             onClick={handleDownload}
                         >
-                            Download Upgraded Exam
+                            下载迁移后的试卷
                         </Button>
 
                         <div style={{ marginTop: 16 }}>
-                            <Text strong>File ready for download!</Text>
+                            <Text strong>文件已经准备好下载！</Text>
                             <br />
-                            <Text>The examination has been upgraded to protocol version {CURRENT_PROTOCOL_VERSION.Major}.{CURRENT_PROTOCOL_VERSION.Minor}.{CURRENT_PROTOCOL_VERSION.Patch}</Text>
+                            <Text>试卷已成功迁移至协议版本 {CURRENT_PROTOCOL_VERSION.Major}.{CURRENT_PROTOCOL_VERSION.Minor}.{CURRENT_PROTOCOL_VERSION.Patch}</Text>
                         </div>
                     </Card>
                 )}
